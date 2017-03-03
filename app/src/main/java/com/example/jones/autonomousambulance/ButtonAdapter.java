@@ -1,13 +1,14 @@
 package com.example.jones.autonomousambulance;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -17,27 +18,53 @@ import java.util.List;
 
 public class ButtonAdapter extends RecyclerView.Adapter<ButtonAdapter.ViewHolder> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView nameTextView;
         public ImageView imageButton;
         private Context context;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
 
             super(itemView);
             nameTextView = (TextView) itemView.findViewById(R.id.buttonText);
             imageButton = (ImageView) itemView.findViewById(R.id.imageButton);
+            /*itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                            Log.i("Values",v.toString());
+                            v.
+                        }
+                    }
+                }
+            });*/
+            itemView.setOnClickListener(this);
+
+
         }
 
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition(); // gets item position
-            if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
-                //User user = users.get(position);
-                // We can access the data within the views
-                Toast.makeText(context, nameTextView.getText(), Toast.LENGTH_SHORT).show();
-            }
+            int position = getLayoutPosition();
+            Log.i("Values",""+position);
+            Intent i = new Intent(getContext(),LocationActivity.class);
+            getContext().startActivity(i);
+
         }
     }
 
